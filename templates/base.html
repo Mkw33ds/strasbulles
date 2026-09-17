@@ -1,0 +1,55 @@
+{% load static wagtailcore_tags wagtailimages_tags wagtailsettings_tags %}
+{% get_settings use_default_site=True %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
+  <title>{% if page.seo_title %}{{ page.seo_title }}{% elif page %}{{ page.title }}{% else %}Strasbulles{% endif %} | Alsace Bande Dessinée</title>
+  <meta name="description" content="{% if page.search_description %}{{ page.search_description }}{% else %}Strasbulles, festival européen de la bande dessinée de Strasbourg, et les actions d’Alsace Bande Dessinée.{% endif %}">
+  {% if page %}<link rel="canonical" href="{{ page.full_url }}">{% endif %}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{% if page %}{{ page.title }}{% else %}Strasbulles{% endif %}">
+  <meta property="og:description" content="{% if page.search_description %}{{ page.search_description }}{% else %}Le festival et l’association Alsace Bande Dessinée.{% endif %}">
+  {% if page.social_image %}{% image page.social_image fill-1200x630 as og_image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ og_image.url }}">{% endif %}
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"{{ contact_settings.organisation_name|default:'Alsace Bande Dessinée'|escapejs }}","url":"{{ request.scheme }}://{{ request.get_host }}/"{% if contact_settings.public_email %},"email":"{{ contact_settings.public_email|escapejs }}"{% endif %}}</script>
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <script src="{% static 'js/site.js' %}" defer></script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#contenu">Aller au contenu</a>
+  <header class="border-b-2 border-ink bg-paper" role="banner">
+    <div class="wrap flex min-h-20 items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-3 no-underline" aria-label="Strasbulles, accueil">
+        <img src="{% static 'img/abd-logo.png' %}" width="64" height="43" style="width: 64px; height: auto;" class="shrink-0" alt="" aria-hidden="true">
+        <span class="font-display text-xl uppercase leading-none">Strasbulles<small class="mt-1 block font-sans text-[0.63rem] tracking-wider">Alsace Bande Dessinée</small></span>
+      </a>
+      <button class="border-2 border-ink px-4 py-2 font-bold lg:hidden" data-menu-button aria-expanded="false" aria-controls="menu-mobile">Menu</button>
+      <nav class="hidden lg:block" aria-label="Navigation principale">
+        <ul class="flex items-center gap-5 text-sm font-bold">
+          <li><a href="/" {% if request.path == '/' %}aria-current="page" class="text-magenta"{% endif %}>Accueil</a></li>
+          <li><details class="relative"><summary class="cursor-pointer {% if '/strasbulles/' in request.path or '/auteurs-et-autrices/' in request.path or '/archives/' in request.path %}text-magenta{% endif %}">Strasbulles</summary><ul class="absolute right-0 z-30 mt-3 w-64 border-2 border-ink bg-white p-4 shadow-[5px_5px_0_#171217]"><li><a href="/strasbulles/">Le festival</a></li><li><a href="/auteurs-et-autrices/">Auteurs et autrices</a></li><li><a href="/archives/">Archives</a></li></ul></details></li>
+          <li><details class="relative"><summary class="cursor-pointer {% if '/association/' in request.path %}text-magenta{% endif %}">L’association</summary><ul class="absolute right-0 z-30 mt-3 w-72 border-2 border-ink bg-white p-4 shadow-[5px_5px_0_#171217]"><li><a href="/association/">À propos</a></li><li><a href="/association/classes-de-bande-dessinee/">Classes de bande dessinée</a></li><li><a href="/association/adherer-soutenir/">Adhérer / Soutenir</a></li></ul></details></li>
+          <li><a href="/evenements/" {% if '/evenements/' in request.path %}aria-current="page" class="text-magenta"{% endif %}>Événements</a></li><li><a href="/rencontres/" {% if request.path == '/rencontres/' %}aria-current="page" class="text-magenta"{% endif %}>Les rencontres</a></li><li><a href="/chroniques/" {% if '/chroniques/' in request.path %}aria-current="page" class="text-magenta"{% endif %}>Chroniques</a></li><li><a href="/contact/" {% if request.path == '/contact/' %}aria-current="page" class="text-magenta"{% endif %}>Contact</a></li>
+          <li><a href="{% url 'search' %}" aria-label="Rechercher sur le site">Rechercher</a></li>
+        </ul>
+      </nav>
+    </div>
+    <nav id="menu-mobile" data-mobile-menu hidden class="border-t-2 border-ink bg-white px-5 py-5 lg:hidden" aria-label="Navigation mobile">
+      <ul class="grid gap-3 font-bold"><li><a href="/">Accueil</a></li><li><a href="/strasbulles/">Le festival</a></li><li><a href="/auteurs-et-autrices/">Auteurs et autrices</a></li><li><a href="/archives/">Archives</a></li><li><a href="/association/">L’association</a></li><li><a href="/evenements/">Événements</a></li><li><a href="/rencontres/">Les rencontres</a></li><li><a href="/chroniques/">Chroniques</a></li><li><a href="/contact/">Contact</a></li><li><a href="{% url 'search' %}">Recherche</a></li></ul>
+    </nav>
+  </header>
+  {% if messages %}<div class="wrap pt-5" role="status">{% for message in messages %}<p class="border-2 border-cyan bg-white p-4">{{ message }}</p>{% endfor %}</div>{% endif %}
+  <main id="contenu" tabindex="-1">{% block content %}{% endblock %}</main>
+  <footer class="border-t-2 border-ink bg-ink py-14 text-white">
+    <div class="wrap grid gap-10 md:grid-cols-3">
+      <div><p class="font-display text-2xl">Alsace Bande Dessinée</p>{% if contact_settings.postal_address %}<p class="mt-3 whitespace-pre-line">{{ contact_settings.postal_address }}</p>{% else %}<p class="mt-3 text-white/70">Coordonnées à compléter dans les réglages du CMS.</p>{% endif %}{% if contact_settings.public_email %}<p><a href="mailto:{{ contact_settings.public_email }}">{{ contact_settings.public_email }}</a></p>{% endif %}</div>
+      <nav aria-label="Navigation de pied de page"><p class="mb-3 font-bold">Liens utiles</p><ul class="grid gap-2"><li><a href="/mentions-legales/">Mentions légales</a></li><li><a href="/politique-de-confidentialite/">Politique de confidentialité</a></li>{% for link in footer_links %}<li><a href="{{ link.url }}">{{ link.label }}</a></li>{% endfor %}</ul></nav>
+      <div><p class="mb-3 font-bold">Nous suivre</p>{% if social_links %}<ul class="flex flex-wrap gap-4">{% for link in social_links %}<li><a href="{{ link.url }}" rel="noopener noreferrer">{{ link.label }}</a></li>{% endfor %}</ul>{% else %}<p class="text-white/70">Liens sociaux à compléter dans le CMS.</p>{% endif %}</div>
+    </div>
+    <p class="wrap mt-12 border-t border-white/30 pt-6 text-sm">© {% now "Y" %} Alsace Bande Dessinée. Tous droits réservés.</p>
+  </footer>
+</body>
+</html>

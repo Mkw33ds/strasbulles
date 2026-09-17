@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% block content %}
+<article class="wrap section grid gap-12 lg:grid-cols-[.7fr_1.3fr]">
+  {% if page.portrait %}
+    <div>
+      {% image page.portrait width-800 as portrait %}
+      <img class="border-2 border-ink shadow-[8px_8px_0_#171217]" src="{{ portrait.url }}" width="{{ portrait.width }}" height="{{ portrait.height }}" alt="{{ page.portrait_alt }}">
+    </div>
+  {% endif %}
+  <div>
+    <span class="eyebrow">{{ page.discipline }}{% if page.country %} · {{ page.country }}{% endif %}</span>
+    <h1>{{ page.title }}</h1>
+    <div class="prose-site mt-8">
+      {{ page.biography|richtext }}
+      {% if page.bibliography %}<h2>Œuvres choisies</h2>{{ page.bibliography|richtext }}{% endif %}
+    </div>
+    {% if page.website %}<a class="button mt-6" href="{{ page.website }}" rel="noopener noreferrer">Site de l’artiste</a>{% endif %}
+  </div>
+</article>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+{% include "includes/page_header.html" with eyebrow="Talents" %}
+<section class="wrap section">
+  <form method="get" class="mb-12 grid max-w-3xl gap-4 md:grid-cols-[1fr_14rem_auto]" role="search">
+    <div>
+      <label for="authors-q">Rechercher un nom</label>
+      <input id="authors-q" name="q" value="{{ query }}">
+    </div>
+    <div>
+      <label for="authors-edition">Édition</label>
+      <select id="authors-edition" name="edition">
+        <option value="">Toutes les éditions</option>
+        {% for year in edition_years %}<option value="{{ year }}" {% if selected_edition == year|stringformat:"s" %}selected{% endif %}>{{ year }}</option>{% endfor %}
+      </select>
+    </div>
+    <button class="button self-end">Rechercher</button>
+  </form>
+  <div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
+    {% for author in authors %}
+      {% include "includes/author_card.html" with author=author %}
+    {% empty %}
+      <p class="col-span-full">Aucun artiste ne correspond à votre recherche.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

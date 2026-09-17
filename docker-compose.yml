@@ -1,0 +1,63 @@
+services:
+  db:
+    image: postgres:17.10-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-strasbulles}
+      POSTGRES_USER: ${POSTGRES_USER:-strasbulles}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-strasbulles-dev}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  web:
+    build:
+      context: .
+      target: development
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.dev
+      DATABASE_URL: postgres://${POSTGRES_USER:-strasbulles}:${POSTGRES_PASSWORD:-strasbulles-dev}@db:5432/${POSTGRES_DB:-strasbulles}
+      DEBUG: "1"
+      EMAIL_HOST: mailpit
+      EMAIL_PORT: "1025"
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - .:/app
+      - media_data:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+  assets:
+    build:
+      context: .
+      target: assets
+    command: npm run css:watch
+    working_dir: /build
+    volumes:
+      - ./static_src:/build/static_src
+      - ./static:/build/static
+      - ./templates:/build/templates:ro
+  mailpit:
+    image: axllent/mailpit:v1.27.8
+    ports:
+      - "8025:8025"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  postgres_data:
+  media_data:

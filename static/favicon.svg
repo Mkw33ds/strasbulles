@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Strasbulles">
+  <rect width="64" height="64" fill="#c2185b"/>
+  <path d="M15 13h35v9H29v6h17v9H29v6h22v9H15z" fill="#fffaf4"/>
+  <circle cx="51" cy="14" r="6" fill="#171217"/>
+</svg>

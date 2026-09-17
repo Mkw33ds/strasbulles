@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #171217;
+  --color-paper: #fffaf4;
+  --color-magenta: #c2185b;
+  --color-magenta-dark: #8f1043;
+  --color-cyan: #007f86;
+  --font-sans: "Arial", "Helvetica Neue", sans-serif;
+  --font-display: "Arial Black", "Arial", sans-serif;
+}
+
+@layer base {
+  html { @apply scroll-smooth bg-paper text-ink; }
+  body { @apply min-h-screen font-sans text-[1.05rem] leading-relaxed; }
+  h1, h2, h3 { @apply font-display leading-[1.05] tracking-[-0.025em]; }
+  h1 { @apply text-4xl md:text-6xl; }
+  h2 { @apply text-3xl md:text-5xl; }
+  h3 { @apply text-xl md:text-2xl; }
+  a { @apply underline-offset-4; }
+  a:hover { @apply decoration-2; }
+  :focus-visible { @apply outline-4 outline-offset-4 outline-cyan; }
+  input, textarea, select { @apply w-full rounded-none border-2 border-ink bg-white px-4 py-3; }
+  input[type="checkbox"] { @apply h-5 w-5 shrink-0; }
+  label { @apply font-bold; }
+}
+
+@layer components {
+  .wrap { @apply mx-auto w-full max-w-[90rem] px-5 md:px-8 lg:px-12; }
+  .section { @apply py-14 md:py-24; }
+  .eyebrow { @apply mb-3 block text-sm font-black uppercase tracking-[0.16em] text-magenta; }
+  .button { @apply inline-flex min-h-12 items-center justify-center border-2 border-ink bg-magenta px-6 py-3 font-black text-white no-underline shadow-[5px_5px_0_#171217] transition-transform hover:-translate-y-0.5; }
+  .button--light { @apply bg-paper text-ink; }
+  .card { @apply relative border-2 border-ink bg-white p-5 shadow-[6px_6px_0_#171217]; }
+  .card-link { @apply after:absolute after:inset-0 after:content-['']; }
+  .prose-site { @apply max-w-3xl text-lg; }
+  .prose-site h2 { @apply mt-12 mb-5 text-3xl; }
+  .prose-site h3 { @apply mt-8 mb-3 text-2xl; }
+  .prose-site p { @apply mb-5; }
+  .prose-site ul { @apply mb-5 list-disc pl-6; }
+  .prose-site ol { @apply mb-5 list-decimal pl-6; }
+  .richtext-image { @apply h-auto max-w-full; }
+  .skip-link { @apply fixed left-4 top-4 z-[100] -translate-y-32 bg-ink px-4 py-3 text-white focus:translate-y-0; }
+}
+
+[x-cloak] { display: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}
